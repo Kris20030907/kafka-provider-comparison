@@ -17,10 +17,10 @@ All execution logic of the comparison platform is encapsulated in GitHub Actions
 1. GitHub Actions meet the scheduled trigger conditions and trigger the Workflow execution.
 2. The Benchmark processes of multiple Kafka Providers included in the Workflow will be executed in parallel.
 3. Each Benchmark Provider process includes the following sequential sub-stages, executed in order. Different Kafka Providers will be evaluated simultaneously.
-    1. Install: Initialize cloud resources on AWS according to the Terraform configuration file, check out the code, install dependencies, and then use the Ansible playbook to install the Kafka Provider. This stage will also calculate the cost based on the Terraform configuration file, as part of the final Comparison Report.
-    2. Benchmark: This stage depends on the Install stage and will be triggered after its completion. This stage mainly uses the information from the Terraform Output to remotely log in to the cloud Client machine and execute the OpenMessaging Benchmark test.
-    3. Generate Report: The Benchmark result files executed on the cloud Client will be copied to the GitHub Runner machine, the content will be parsed to generate the final Report content, and displayed in [issue-1](https://github.com/AutoMQ/kafka-provider-comparison/issues/1)
-    4. Uninstall: This stage depends on the Benchmark stage and will be triggered after its completion. This stage will clean up cloud resources, including deleting the cloud Client machine and the Kafka Provider cluster on the cloud.
+   1. Install: Initialize cloud resources on AWS according to the Terraform configuration file, check out the code, install dependencies, and then use the Ansible playbook to install the Kafka Provider. This stage will also calculate the cost based on the Terraform configuration file, as part of the final Comparison Report.
+   2. Benchmark: This stage depends on the Install stage and will be triggered after its completion. This stage mainly uses the information from the Terraform Output to remotely log in to the cloud Client machine and execute the OpenMessaging Benchmark test.
+   3. Generate Report: The Benchmark result files executed on the cloud Client will be copied to the GitHub Runner machine, the content will be parsed to generate the final Report content, and displayed in [issue-1](https://github.com/AutoMQ/kafka-provider-comparison/issues/1)
+   4. Uninstall: This stage depends on the Benchmark stage and will be triggered after its completion. This stage will clean up cloud resources, including deleting the cloud Client machine and the Kafka Provider cluster on the cloud.
 
 ## Benchmark Report Description
 
@@ -49,6 +49,8 @@ Create a `driver-foo` module in the root directory, and the `/deploy/aws-cn` dir
 - deploy.yaml: The Ansible playbook configuration file for deploying the specific Kafka Provider.
 - cost_explanation.md: A document explaining how the cost is calculated. Different Kafka Providers have different implementations, leading to significant differences in the usage of some computing and storage services. To ensure fairness and openness, please provide a detailed explanation of the cost usage calculation logic. This part of the explanation can refer to the files in the `cost-explanation` directory of the project.
 - infracost usage config yaml: In the root directory of infracost, we provide a default `template-medium-500m` template file, which is also the default usage configuration file for infracost medium scale. You can modify this file according to the actual situation of your Kafka Provider to more accurately calculate the usage cost. And publicly explain these modifications in `cost-explanation/foo.md`.
+
+After completing the above steps, you need to add a new job in the three files under `.github/workflows` following the pattern of other Kafka Providers to ensure that the Workflow can execute the Benchmark process of your Kafka Provider when it runs on a schedule. If you have any questions about how to contribute, feel free to submit an issue under this project or join our [Slack](https://join.slack.com/t/automq/shared_invite/zt-29h17vye9-thf31ebIVL9oXuRdACnOIA) channel for discussion.
 
 You can fork our code and test it locally. When you are satisfied with the test, you can submit a PR to our repository. We will review and merge your PR after receiving it. After merging, we will check the accuracy of your code execution in our workflow. If there are any issues, we will provide feedback on the PR and temporarily disable the execution and comparison of your Kafka Provider in the workflow (for new Kafka providers) or revert to the previous version.
 
@@ -87,5 +89,8 @@ We plan to trigger the workflow to generate a comparison report every Monday at 
 
 ## Roadmap
 
-- Add horizontal automated comparisons for Kafka Providers such as Confluent/Aiven/Redpanda
+- Add horizontal automated comparisons for Kafka Providers such as Confluent/Aiven/Redpanda/WarpStream/Pulsar
 - Support comparison of elasticity, i.e., how long it takes for the Client to recover from scaling actions
+- Add tests related to Kafka compatibility.
+- More visually appealing and readable comparative reports.
+
