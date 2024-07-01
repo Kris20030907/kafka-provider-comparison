@@ -42,7 +42,7 @@ variable "region" {
 
 variable "az" {
   type = list(string)
-  default = ["cn-northwest-1a", "cn-northwest-1b"]
+  default = ["cn-northwest-1a"]
 }
 
 variable "ami" {}
@@ -408,6 +408,11 @@ resource "aws_s3_bucket" "benchmark_bucket" {
 output "user" {
   value = var.user
 }
+
+output "bootstrap_brokers" {
+  value = var.instance_cnt["server"] > 0 ? format("%s:9092", aws_instance.server[0].private_ip) : null
+}
+
 
 output "server_ssh_host" {
   value = var.instance_cnt["server"] > 0 ? aws_instance.server[0].public_ip : null

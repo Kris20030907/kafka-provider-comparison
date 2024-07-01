@@ -25,30 +25,18 @@ inputs:
   execute_benchmark:
     required: true
 outputs:
-  benchmark_result_json_automq:
-    value: ${{ steps.output_benchmark_result.outputs.benchmark_result_json_automq }}
-  extracted_data_automq:
-    value: ${{ steps.extract_final_result.outputs.extracted_data_automq }}
-  baseline_cost_automq:
-    value: ${{ steps.extract_costs.outputs.baseline_cost_automq }}
-  usage_cost_automq:
-    value: ${{ steps.extract_costs.outputs.usage_cost_automq }}
-  total_cost_automq:
-    value: ${{ steps.extract_costs.outputs.total_cost_automq }}
-  reassign_cost_data_automq:
-    value: ${{ steps.extract_reassign_result.outputs.reassign_cost_data_automq }}
-  benchmark_result_json_kafka:
-    value: ${{ steps.output_benchmark_result.outputs.benchmark_result_json_kafka }}
-  extracted_data_kafka:
-    value: ${{ steps.extract_final_result.outputs.extracted_data_kafka }}
-  baseline_cost_kafka:
-    value: ${{ steps.extract_costs.outputs.baseline_cost_kafka }}
-  usage_cost_kafka:
-    value: ${{ steps.extract_costs.outputs.usage_cost_kafka }}
-  total_cost_kafka:
-    value: ${{ steps.extract_costs.outputs.total_cost_kafka }}
-  reassign_cost_data_kafka:
-    value: ${{ steps.extract_reassign_result.outputs.reassign_cost_data_kafka }}
+  benchmark_result_json_msk:
+    value: ${{ steps.output_benchmark_result.outputs.benchmark_result_json_msk }}
+  extracted_data_msk:
+    value: ${{ steps.extract_final_result.outputs.extracted_data_msk }}
+  baseline_cost_msk:
+    value: ${{ steps.extract_costs.outputs.baseline_cost_msk }}
+  usage_cost_msk:
+    value: ${{ steps.extract_costs.outputs.usage_cost_msk }}
+  total_cost_msk:
+    value: ${{ steps.extract_costs.outputs.total_cost_msk }}
+  reassign_cost_data_msk:
+    value: ${{ steps.extract_reassign_result.outputs.reassign_cost_data_msk }}
 
 runs:
   using: "composite"
@@ -66,26 +54,22 @@ runs:
     - name: Output Costs
       shell: bash
       run: |
-        if [ "${{ inputs.streaming_provider }}" = "automq" ]; then
-          echo "Baseline cost: ${{ steps.extract_costs.outputs.baseline_cost_automq }}"
-          echo "Usage cost: ${{ steps.extract_costs.outputs.usage_cost_automq }}"
-          echo "Total cost: ${{ steps.extract_costs.outputs.total_cost_automq }}"
-        elif [ "${{ inputs.streaming_provider }}" = "kafka" ]; then
-          echo "Baseline cost: ${{ steps.extract_costs.outputs.baseline_cost_kafka }}"
-          echo "Usage cost: ${{ steps.extract_costs.outputs.usage_cost_kafka }}"
-          echo "Total cost: ${{ steps.extract_costs.outputs.total_cost_kafka }}"
+        if [ "${{ inputs.streaming_provider }}" = "msk" ]; then
+          echo "Baseline cost: ${{ steps.extract_costs.outputs.baseline_cost_msk }}"
+          echo "Usage cost: ${{ steps.extract_costs.outputs.usage_cost_msk }}"
+          echo "Total cost: ${{ steps.extract_costs.outputs.total_cost_msk }}"
         fi
 
     - name: Setup terraform
       uses: hashicorp/setup-terraform@v3
 
     - name: Initialize terraform
-      working-directory: driver-shared/deploy/${{ inputs.cloud_provider }}
+      working-directory: driver-${{ inputs.streaming_provider }}/deploy/${{ inputs.cloud_provider }}
       shell: bash
       run: terraform init
 
     - name: Uninstall Cloud Infra
-      working-directory: driver-shared/deploy/${{ inputs.cloud_provider }}
+      working-directory: driver-${{ inputs.streaming_provider }}/deploy/${{ inputs.cloud_provider }}
       shell: bash
       run: |
         if [ "${{ inputs.uninstall }}" = "true" ]; then
@@ -94,7 +78,7 @@ runs:
 
 
     - name: Terraform Plan
-      working-directory: driver-shared/deploy/${{ inputs.cloud_provider }}
+      working-directory: driver-${{ inputs.streaming_provider }}/deploy/${{ inputs.cloud_provider }}
       shell: bash
       run: |
         if [ "${{ inputs.uninstall }}" = "false" ]; then
@@ -102,7 +86,7 @@ runs:
         fi
 
     - name: Apply terraform
-      working-directory: driver-shared/deploy/${{ inputs.cloud_provider }}
+      working-directory: driver-${{ inputs.streaming_provider }}/deploy/${{ inputs.cloud_provider }}
       shell: bash
       run: |
         if [ "${{ inputs.uninstall }}" = "false" ]; then
@@ -120,20 +104,13 @@ runs:
         fi
 
 
-    - name: Download Latest AutoMQ TGZ File
-      shell: bash
-      run: |
-        if [[ "${{ inputs.uninstall }}" = "false" && "${{ inputs.execute_benchmark }}" = "false" && "${{ inputs.streaming_provider }}" = "automq" ]]; then
-          curl -L https://download.automq.com/community_edition/artifacts/automq-kafka-latest.tgz -o /tmp/automq-kafka-latest.tgz
-        fi
 
 
     - name: Install Streaming Cluster
-      working-directory: driver-shared/deploy/${{ inputs.cloud_provider }}
+      working-directory: driver-${{ inputs.streaming_provider }}/deploy/${{ inputs.cloud_provider }}
       shell: bash
       run: |
         if [[ "${{ inputs.uninstall }}" = "false" && "${{ inputs.execute_benchmark }}" = "false" ]]; then
-              echo "Install Apache Kafka"
               wget https://github.com/adammck/terraform-inventory/releases/download/v0.10/terraform-inventory_v0.10_linux_amd64.zip
               unzip terraform-inventory_v0.10_linux_amd64.zip
               mv terraform-inventory /usr/local/bin
@@ -141,7 +118,7 @@ runs:
         fi
 
     - name: Execute Benchmark
-      working-directory: driver-shared/deploy/${{ inputs.cloud_provider }}
+      working-directory: driver-${{ inputs.streaming_provider }}/deploy/${{ inputs.cloud_provider }}
       shell: bash
       run: |
         if [ "${{ inputs.execute_benchmark }}" = "true" ]; then
@@ -162,6 +139,7 @@ runs:
           sudo apt-get install jq
           JSON_FILE=$(ls /tmp/*.json | head -n 1)
           extracted_benchmark_output=$(cat $JSON_FILE)
+          echo "$extracted_benchmark_output"
           echo "benchmark_result_json_$STREAMING_PROVIDER<<EOF" >> $GITHUB_OUTPUT
           echo "$extracted_benchmark_output" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT

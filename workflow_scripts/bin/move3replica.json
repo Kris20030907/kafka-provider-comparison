@@ -1,0 +1,160 @@
+{
+    "partitions": [
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 0,
+            "replicas": [1, 2, 3]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 1,
+            "replicas": [2, 3, 1]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 2,
+            "replicas": [3, 1, 2]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 3,
+            "replicas": [1, 3, 2]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 4,
+            "replicas": [2, 1, 3]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 5,
+            "replicas": [3, 2, 1]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 6,
+            "replicas": [1, 2, 3]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 7,
+            "replicas": [2, 3, 1]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 8,
+            "replicas": [3, 1, 2]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 9,
+            "replicas": [1, 3, 2]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 10,
+            "replicas": [2, 1, 3]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 11,
+            "replicas": [3, 2, 1]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 12,
+            "replicas": [1, 2, 3]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 13,
+            "replicas": [2, 3, 1]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 14,
+            "replicas": [3, 1, 2]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 15,
+            "replicas": [1, 3, 2]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 16,
+            "replicas": [2, 1, 3]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 17,
+            "replicas": [3, 2, 1]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 18,
+            "replicas": [1, 2, 3]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 19,
+            "replicas": [2, 3, 1]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 20,
+            "replicas": [3, 1, 2]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 21,
+            "replicas": [1, 3, 2]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 22,
+            "replicas": [2, 1, 3]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 23,
+            "replicas": [3, 2, 1]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 24,
+            "replicas": [1, 2, 3]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 25,
+            "replicas": [2, 3, 1]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 26,
+            "replicas": [3, 1, 2]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 27,
+            "replicas": [1, 3, 2]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 28,
+            "replicas": [2, 1, 3]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 29,
+            "replicas": [3, 2, 1]
+        },
+        {
+            "topic": "${REASSIGN_TOPIC}",
+            "partition": 30,
+            "replicas": [1, 2, 3]
+        }
+    ],
+    "version": 1
+}

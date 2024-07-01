@@ -36,6 +36,10 @@
 			<directory>${basedir}/../payload</directory>
 		</fileSet>
 		<fileSet>
+			<directory>${basedir}/../workflow_scripts/bin</directory>
+			<fileMode>777</fileMode>
+		</fileSet>
+		<fileSet>
 			<directory>${basedir}/../bin</directory>
 			<fileMode>755</fileMode>
 		</fileSet>
@@ -78,7 +82,7 @@
 			<unpack>false</unpack>
 			<scope>compile</scope>
 			<useProjectArtifact>false</useProjectArtifact>
-			<!-- Include 'groupId' in the dependencies Jar names to better identify 
+			<!-- Include 'groupId' in the dependencies Jar names to better identify
 				the provenance of the jar -->
 			<outputFileNameMapping>${artifact.groupId}-${artifact.artifactId}-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
 

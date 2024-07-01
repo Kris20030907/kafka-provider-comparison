@@ -11,14 +11,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const {Octokit} = require("@octokit/rest");
-
-const repoName = process.env.GITHUB_REPOSITORY_NAME;
-const issue_number = 1; // 这个值应该根据你的需求来设置
-
-const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN
-});
+// const {Octokit} = require("@octokit/rest");
+//
+// const repoName = process.env.GITHUB_REPOSITORY_NAME;
+// const issue_number = 1; // 这个值应该根据你的需求来设置
+//
+// const octokit = new Octokit({
+//     auth: process.env.GITHUB_TOKEN
+// });
 
 const fs = require('fs');
 
@@ -35,19 +35,17 @@ const readFileContentSync = (filePath) => {
 const path = require('path');
 
 const readJsonFilesSync = () => {
-    const workspaceHome = process.env.WORKSPACE_HOME;
-    if (!workspaceHome) {
-        throw new Error('Env WORKSPACE_HOME not set');
-    }
+    // 使用 __dirname 获取当前脚本所在的目录
+    const currentDir = __dirname;
 
     const filePaths = [
-        'workflow_scripts/js/BENCHMARK_RESULT_AUTOMQ.info',
-        'workflow_scripts/js/BENCHMARK_RESULT_KAFKA.info',
-        'workflow_scripts/js/EXTRACTED_DATA_AUTOMQ.info',
-        'workflow_scripts/js/EXTRACTED_DATA_KAFKA.info',
-        'workflow_scripts/js/BENCHMARK_RESULT_MSK.info',
-        'workflow_scripts/js/EXTRACTED_DATA_MSK.info'
-    ].map(file => path.join(workspaceHome, file));
+        'BENCHMARK_RESULT_AUTOMQ.info',
+        'BENCHMARK_RESULT_KAFKA.info',
+        'EXTRACTED_DATA_AUTOMQ.info',
+        'EXTRACTED_DATA_KAFKA.info',
+        'BENCHMARK_RESULT_MSK.info',
+        'EXTRACTED_DATA_MSK.info'
+    ].map(file => path.join(currentDir, file)); // 使用当前目录路径
 
 
     return {
@@ -55,7 +53,7 @@ const readJsonFilesSync = () => {
         jsonDataKafka: readFileContentSync(filePaths[1]) ?? {},
         extractedDataAutoMQ: readFileContentSync(filePaths[2]) ?? {},
         extractedDataKafka: readFileContentSync(filePaths[3]) ?? {},
-        jsonDataMSK: readFileContentSync(filePaths[4]) ?? {},
+        jsonDataMSK: readFileContentSync(filePaths[4]) ?? {}, // 添加默认值
         extractedDataMSK: readFileContentSync(filePaths[5]) ?? {}
     };
 };
@@ -166,7 +164,6 @@ const usageCostAutoMQ = parseFloat(process.env.USAGE_COST_AUTOMQ).toFixed(2);
 const totalCostAutoMQ = parseFloat(process.env.TOTAL_COST_AUTOMQ).toFixed(2);
 const reassignCostSecondsAutoMQ = process.env.REASSIGN_COST_AUTOMQ;
 
-
 // --- Kafka
 const baselineCostKafka = parseFloat(process.env.BASELINE_COST_KAFKA).toFixed(2);
 const usageCostKafka = parseFloat(process.env.USAGE_COST_KAFKA).toFixed(2);
@@ -175,10 +172,11 @@ const reassignCostSecondsKafka = process.env.REASSIGN_COST_KAFKA;
 
 
 // ---- MSK
-const baselineCostMSK = parseFloat(process.env.BASELINE_COST_MSK).toFixed(2);
+const baselineCostMSK = parseFloat("91.35000000000002").toFixed(2);
 const usageCostMSK = parseFloat(process.env.USAGE_COST_MSK).toFixed(2);
 const totalCostMSK = parseFloat(process.env.TOTAL_COST_MSK).toFixed(2);
 const reassignCostSecondsMSK = process.env.REASSIGN_COST_MSK;
+
 
 
 // Get current date and time
@@ -206,39 +204,21 @@ const markdownReport = `
   Average Throughput [AutoMQ]: ${average_throughput_automq_new} MB/s
   Average Throughput [Kafka]: ${average_throughput_kafka_new} MB/s
   Average Throughput [AWS MSK]: ${average_throughput_msk_new} MB/s
-
   > Cost Estimate Rule: Check explanation under cost-explanation directory of this repository
-
   
   #### Elasticity
-  Take how many seconds to move 30 partitions from one broker to another broker after write 36GB data
+  Take how many seconds to move 30 partitions from one broker to another broker after write 750GB data
   [AutoMQ]: ${reassignCostSecondsAutoMQ} seconds
   [Kafka]: ${reassignCostSecondsKafka} seconds
   [Amazon MSK]: ${reassignCostSecondsMSK} seconds
 
-  | Kafka Provider | Pub Latency (ms) avg | Pub Latency (ms) P99 | E2E LatencyAvg(ms) | E2E P95 Latency(ms) | E2E P99 Latency(ms) | Baseline Cost($) | Usage Cost($) | Total Cost($) |
+
+
+  | Kafka Provider | Pub Latency (ms) avg | Pub Latency (ms) P99 | E2E LatencyAvg(ms) | E2E P95 Latency(ms) | E2E P99 Latency(ms) | Baseline Cost | Usage Cost | Total Cost |
   | ---------------- | ------------------ |  ------------------ |  ------------------ | ------------------- | ------------------- | ------------- | ---------- | ---------- |
   | AutoMQ           | ${average_pub_latency_automq}      | ${p99_pub_latency_automq}      |${latencyAvgAutoMQ}      | ${latency95pctAutoMQ}     | ${latency99pctAutoMQ}     | ${baselineCostAutoMQ} | ${usageCostAutoMQ} | ${totalCostAutoMQ} |
   | Apache Kafka           | ${average_pub_latency_kafka}      |${p99_pub_latency_kafka}      |${latencyAvgKafka}      | ${latency95pctKafka}     | ${latency99pctKafka}     | ${baselineCostKafka} | ${usageCostKafka} | ${totalCostKafka} |
   | AWS MSK           | ${average_pub_latency_msk}      |${p99_pub_latency_msk}      |${latencyAvgMSK}      | ${latency95pctMSK}     | ${latency99pctMSK}     | ${baselineCostMSK} | ${usageCostMSK} | ${totalCostMSK} |
 `;
 
-async function generateAndPostReport() {
-    console.log(`Issue Number: ${markdownReport}`);
-
-    const [repoOwnerApi, repoNameApi] = repoName.split('/');
-
-    try {
-        await octokit.rest.issues.createComment({
-            owner: repoOwnerApi,
-            repo: repoNameApi,
-            issue_number: issue_number,
-            body: markdownReport
-        });
-        console.log('Comment created successfully');
-    } catch (error) {
-        console.error('Error creating comment:', error);
-    }
-}
-
-generateAndPostReport();
+console.log(markdownReport)

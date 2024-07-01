@@ -9,6 +9,7 @@ Kafka Provider Comparison (KPC) is a public Kafka comparison platform built on t
 
 * [AutoMQ](https://www.automq.com)
 * [Apache Kafka](https://kafka.apache.org)
+* [Amazon MSK](https://docs.amazonaws.cn/msk/index.html)
 
 ## Comparison Platform Execution Logic
 
@@ -62,7 +63,7 @@ KPC also supports comparisons of non-open-source Kafka Providers. If your Kafka 
 
 ### Fixed Workload Configuration
 
-To ensure the fairness of the comparison, we have fixed a representative Workload, Producer, and Consumer configuration [tail-read-500m.yaml](workloads/vs/fast-tail-read-500m.yaml). This configuration supports generating a theoretical peak write throughput of 500 MB/s.
+To ensure the fairness of the comparison, we have fixed a representative Workload, Producer, and Consumer configuration [tail-read-100m.yaml](workloads/vs/fast-tail-read-100m.yaml). This configuration supports generating a theoretical peak write throughput of 500 MB/s.
 
 ### Cost Estimation
 
@@ -72,6 +73,7 @@ The cost of fixed-scale cloud services can be clearly calculated. The challenge 
 
 - [AutoMQ](cost-explanation/automq.md)
 - [Apache Kafka](cost-explanation/kafka.md)
+- [Apache MSK](cost-explanation/msk.md)
 
 ### Dependent Action Secrets
 

@@ -19,7 +19,7 @@
   tasks:
     - name: Set common facts
       set_fact:
-        bootstrapServers: "{{ hostvars[inventory_hostname]['bootstrap_brokers_tls'] }}"
+        bootstrapServers: "{{ hostvars[inventory_hostname]['bootstrap_brokers'] }}"
         client_worker_heap_size: "8g"
         client_bench_heap_size: "4g"
 
@@ -62,7 +62,7 @@
     - shell: tuned-adm profile latency-performance
 
     - name: Get list of driver config files
-      raw: ls -1 /opt/benchmark/driver-msk/deploy/aws-cn/*.yaml
+      raw: ls -1 /opt/benchmark/driver-msk/*.yaml
       register: drivers_list
       tags: [client-code]
 
