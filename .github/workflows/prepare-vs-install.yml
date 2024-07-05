@@ -1,8 +1,8 @@
 name: Prepare-Streaming-Cluster-Install
 
 on:
-  schedule:
-    - cron: '0 10 * * *'
+  # schedule:
+  #   - cron: '0 10 * * *'
   workflow_dispatch:
     inputs:
       cloud_provider:
