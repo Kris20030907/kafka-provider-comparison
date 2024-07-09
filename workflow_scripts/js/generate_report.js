@@ -202,6 +202,8 @@ const markdownReport = `
   #### replicationFactor
   [AutoMQ] ${replication_factor_automq}
   [Kafka] ${replication_factor_kafka}
+  [MSK] ${replication_factor_kafka}
+  
   #### Average Throughput
   Average Throughput [AutoMQ]: ${average_throughput_automq_new} MB/s
   Average Throughput [Kafka]: ${average_throughput_kafka_new} MB/s
@@ -211,7 +213,7 @@ const markdownReport = `
 
   
   #### Elasticity
-  Take how many seconds to move 30 partitions from one broker to another broker after write 36GB data
+  Take how many seconds to move 30 partitions from one broker to another broker after write 210 GB data (100 MB/s for 35 minutes)
   [AutoMQ]: ${reassignCostSecondsAutoMQ} seconds
   [Kafka]: ${reassignCostSecondsKafka} seconds
   [Amazon MSK]: ${reassignCostSecondsMSK} seconds
